@@ -12,7 +12,7 @@ const configReady = fetch('/api/config').then(async response => {
     script.onerror = reject;
     document.head.append(script);
   });
-  document.querySelectorAll('[data-recaptcha-disclosure]').forEach(p => p.hidden = false);
+  document.querySelectorAll('[data-recaptcha-disclosure]').forEach(p => { p.hidden = false; p.classList.add('captcha-active'); });
 }).catch(() => { configuration = { enabled: false }; });
 function initializeForm(form, kind = 'contact') {
   form.querySelectorAll('[data-ux="InputFloatLabel"] > input').forEach(input => {

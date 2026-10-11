@@ -23,10 +23,12 @@ def localize(url):
     if isinstance(entry,dict): return entry['local']
     if 'AgouraAccounting_Logo' in raw: return logo
     if 'Rick' in raw and 'OakTree' in raw: return hero
+    for name,width,target in [('Recklab_logo','198','recklab-2x.png'),('Recklab_logo','296','recklab-3x.png'),('ea_color','595','enrolled-agent-2x.jpg'),('thervo-2021','200','thervo-2x.jpg')]:
+        if name in raw and 'rs=w:'+width+',' in raw: return '/assets/'+target
     for name,target in [('Recklab_logo','recklab.png'),('ea_color','enrolled-agent.jpg'),('thervo-2021','thervo.png')]:
         if name in raw: return '/assets/'+target
     raise ValueError('Uncaptured asset: '+url)
-asset_pattern = r'(?:\.\./|https://|//)(?:img1|isteam)\.wsimg\.com/[^\s"\'<>)]*'
+asset_pattern = r'(?:\.\./|https://|//)(?:img1|isteam)\.wsimg\.com/[^\s"\'<>]*'
 for name in ['index.html','contact-us.html']:
     s=(SOURCE/'agouraaccounting.com'/name).read_text()
     s=re.sub(r'<script\b[^>]*>.*?</script>', '', s, flags=re.S)
@@ -44,7 +46,7 @@ for name in ['index.html','contact-us.html']:
         return tag
     s=re.sub(r'<img\b[^>]+>',image,s)
     # srcset URLs contain commas; descriptors are separated by comma + space.
-    s=re.sub(asset_pattern,lambda m: localize(m[0].rstrip(','))+(',' if m[0].endswith(',') else ''),s)
+    s=re.sub(asset_pattern,lambda m: localize(m[0].rstrip(',)'))+m[0][len(m[0].rstrip(',)')):],s)
     s=s.replace('href="index.html"','href="/"').replace('href="contact-us.html"','href="/contact-us"').replace('href="manifest.webmanifest"','href="/manifest.webmanifest"')
     s=re.sub(r'(<meta (?:property="og:image"|name="twitter:image") content=")([^"]+)',lambda m:m[1]+'https://agouraaccounting.com'+m[2],s)
     s=re.sub(r'(<form\b)',r'\1 action="/api/contact" method="post"',s)
@@ -55,11 +57,11 @@ for name in ['index.html','contact-us.html']:
     s=re.sub(r'<(?:input|textarea)\b[^>]*data-aid="CONTACT_FORM_(?:NAME|EMAIL|MESSAGE)"[^>]*>',field,s)
     s=s.replace('name="_app_id"','name="website"')
     # Disclosure only appears when configured reCAPTCHA protection is active.
-    s=s.replace('<p data-ux="DetailsMinor"','<p hidden data-recaptcha-disclosure data-ux="DetailsMinor"')
+    s=s.replace('<p data-ux="DetailsMinor"','<p data-recaptcha-disclosure data-ux="DetailsMinor"')
     s=s.replace('</form>','<p class="form-status" role="status" aria-live="polite" hidden></p></form>')
     # Hosting attribution no longer describes the platform; retain spacing via its existing container.
     s=re.sub(r'(<p[^>]*data-aid="FOOTER_POWERED_BY_RENDERED"[^>]*>).*?</p>',r'\1<span aria-hidden="true">&nbsp;</span></p>',s)
-    s=s.replace('</head>','<link rel="stylesheet" href="/assets/migration.css"/><link rel="canonical" href="https://agouraaccounting.com'+('/' if name=='index.html' else '/contact-us')+'"/></head>')
+    s=s.replace('</head>','<link rel="icon" href="'+logo+'"/><link rel="stylesheet" href="/assets/migration.css"/><link rel="canonical" href="https://agouraaccounting.com'+('/' if name=='index.html' else '/contact-us')+'"/></head>')
     s=s.replace('</body>','<script defer src="/assets/font-scaler.js"></script><script defer src="/assets/site.js"></script></body>')
     (PUBLIC/name).write_text(s)
 # Preserve the original standalone heading scaling algorithm, without GoDaddy runtime.

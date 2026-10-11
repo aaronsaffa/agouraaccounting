@@ -1,0 +1,24 @@
+# Local verification — October 11, 2026
+
+Live original compared with migrated local pages using headless Brave/Chromium. All four comparison pairs had identical page heights and identical recorded heading positions, sizes, and font sizes.
+
+| Page | Viewport | Original height | Local height | Local overflow / missing images / browser errors |
+| --- | --- | --- | --- | --- |
+| Home | 1440 × 900 | 2890 px | 2890 px | None / none / none |
+| Contact Us | 1440 × 900 | 1266 px | 1266 px | None / none / none |
+| Home | 390 × 900 | 2433 px | 2433 px | None / none / none |
+| Contact Us | 390 × 900 | 1063 px | 1063 px | None / none / none |
+
+The live original produced third-party network failures during browser checks; local pages made no GoDaddy requests. Missing-hosting attribution and the unconfigured CAPTCHA disclosure are intentionally blank, with original spacing reserved. Screenshots were visually reviewed for layout, hero/logo placement, fonts, content, forms, footer, and lower-page logos.
+
+- Capture audit: all 68 source hashes unchanged.
+- Asset audit: every local HTML/CSS image, srcset, font, script, stylesheet, and icon reference exists.
+- JavaScript syntax checks: passed for both frontend scripts and both Pages handlers.
+- Backend tests: 3 groups passed, 0 failed; includes accepted-provider response, failures, malformed responses, network errors, input/origin validation, and CAPTCHA checks. All outbound delivery mocked.
+- Browser form failure: original error wording displayed; input retained; no success displayed.
+- Messaging: floating button opens dialog; close control closes it.
+- Navigation: home/logo and footer contact links resolve to preserved local public paths. Contact extension redirects to clean path.
+
+No production email or CAPTCHA credentials were available. Cloudflare routing/runtime and actual email delivery remain untested. The Python preview serves static pages and an explicitly unavailable mail endpoint; it is not a Cloudflare Functions emulator.
+
+Raw comparison evidence is available locally under ignored `artifacts/` (`original-*.png`, `local-*.png`, `browser-report.json`, and `interaction-report.json`). Headless full-page screenshot capture initially had a compositor artifact; final screenshots use a full-height viewport after recording dimensions at the stated viewport size.
