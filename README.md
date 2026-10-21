@@ -18,17 +18,17 @@ npx wrangler pages dev public --port 8788
 
 Stop the static preview first to free the port. Configure local bindings in ignored `.dev.vars`, following `.env.example`. No credentials belong in `public/` or Git.
 
-## Future Cloudflare Pages setup (not performed)
+## Cloudflare Pages preview setup
 
-- Framework: None; build command: blank; output directory: `public`; root directory: repository root.
-- Production branch: `main`; preview branch: `dev`. Implementation is currently on `dev`; `main` contains the initial requirements checkpoint.
+- Framework preset: **None**; build command: `exit 0`; build output directory: `public`; root directory: leave blank (repository root). No dependencies or application build are required. The no-op build command follows [Cloudflare’s static HTML guidance](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/) and allows Pages Functions to be packaged.
+- Connect GitHub repository `aaronsaffa/agouraaccounting`. Production branch: `main`; preview deployments: custom branches, include only `dev`. Implementation is on `dev`; `main` contains the initial requirements checkpoint. Keep production deployments disabled while reviewing the migration. Creating a Pages project may trigger an initial build; project creation and deployment are left to the owner.
 - Pages Functions must be included; use Git integration or Wrangler, rather than dashboard static drag-and-drop uploads.
 - `wrangler.toml` declares the output directory. `/api/*` uses Functions; other requests serve static assets. Cloudflare serves `contact-us.html` at `/contact-us`; the legacy extension path redirects to the clean path.
-- No push, deployment, DNS change, or original-site modification has been performed.
+- Repository preparation permits pushing `dev` and establishing `main` on origin. No Cloudflare deployment, DNS change, or original-site modification is part of this preparation.
 
 ## Contact delivery configuration required
 
-Set these in Cloudflare Pages separately for production and preview as appropriate:
+Before starting the preview deployment, set all six bindings in Cloudflare Pages under **Settings → Variables and Secrets → Preview**. Store `RESEND_API_KEY` and `RECAPTCHA_SECRET_KEY` as encrypted secrets; the other values can be plain environment variables. No build-time variables are required. Production bindings are separate.
 
 | Binding | Needed value |
 | --- | --- |
@@ -37,9 +37,9 @@ Set these in Cloudflare Pages separately for production and preview as appropria
 | `CONTACT_FROM` | Sender address on a domain verified with Resend |
 | `RECAPTCHA_SITE_KEY` | Public key for a client-owned reCAPTCHA v3 registration |
 | `RECAPTCHA_SECRET_KEY` | Matching secret key |
-| `RECAPTCHA_HOSTNAMES` | Comma-separated permitted hostnames, including any intended preview host |
+| `RECAPTCHA_HOSTNAMES` | Comma-separated exact permitted hostnames, e.g. `dev.<project>.pages.dev`; no scheme, path, or wildcard |
 
-The capture exposes `asaffa@gmail.com` as the messaging recipient and displays `info@agouraaccounting.com` on the home page. Confirm which recipient should receive both forms and messaging. Do not reuse GoDaddy's platform CAPTCHA keys. Resend is the prepared adapter; a different provider would require updating the backend.
+The capture exposes `asaffa@gmail.com` as the messaging recipient and displays `info@agouraaccounting.com` on the home page. Confirm which recipient should receive both forms and messaging. Register the preview hostname with reCAPTCHA as well as listing it in `RECAPTCHA_HOSTNAMES`. Prefer the stable `dev.<project>.pages.dev` preview alias; unique deployment hostnames must also be allowed if used for form testing. Do not reuse GoDaddy's platform CAPTCHA keys. Resend is the prepared adapter; a different provider would require updating the backend.
 
 Both existing contact forms retain optional Name and Message and required Email. The messaging dialog retains Name, Mobile, Email, and How can we help? Fields and business text are retained from the captured widget configuration. It sends email through the same handler; GoDaddy Conversations/SMS integration is replaced, not reproduced.
 
