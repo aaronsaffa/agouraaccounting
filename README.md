@@ -30,7 +30,7 @@ See [setup state and remaining steps](docs/SETUP.md) before continuing account c
 
 ## Contact delivery configuration required
 
-Before enabling live form delivery, set all six bindings in Cloudflare Pages under **Settings → Variables and Secrets → Preview**. Store `RESEND_API_KEY` and `TURNSTILE_SECRET_KEY` as encrypted secrets; the other values can be plain environment variables. No build-time variables are required. Production bindings are separate.
+Before enabling live form delivery, set all six bindings in Cloudflare Pages under **Settings → Variables and Secrets → Preview**. Store `RESEND_API_KEY` and `TURNSTILE_SECRET_KEY` as encrypted secrets; save the other four bindings as Secrets too: this Wrangler-managed project restricts dashboard additions to Secrets. The code reads both binding types identically, and the site key is intentionally public through `/api/config`. No build-time variables are required. Production bindings are separate.
 
 | Binding | Needed value |
 | --- | --- |
