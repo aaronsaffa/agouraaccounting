@@ -29,4 +29,4 @@ Owner confirmed successful dev preview deployment and approved appearance before
 
 Local preview `/` and `/contact-us` returned HTTP 200; unconfigured `/api/config` returned disabled with no site key. Browser inventory was empty in this session, so a fresh desktop/mobile screenshot comparison could not be performed.
 
-October 22, 2026: owner confirmed a successful form test at the stable dev alias after resolving Turnstile error 110200 caused by using a deployment-specific hostname. All six Preview bindings are now saved as Secrets. Owner subsequently confirmed receipt of the test email in the destination inbox. Complete form-variant and desktop/mobile coverage remain unconfirmed.
+October 22, 2026: owner confirmed a successful form test at the stable dev alias after resolving Turnstile error 110200 caused by using a deployment-specific hostname. All six Preview bindings are now saved as Secrets. Owner subsequently confirmed receipt of the test email in the destination inbox. Owner confirmed all three form variants work (home, contact-us, floating messaging), following the success-and-delivery checklist. Phone layout/navigation coverage remains unconfirmed.
