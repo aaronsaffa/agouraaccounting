@@ -1,0 +1,19 @@
+{
+  "scope": "/",
+  "start_url": "/",
+  "display": "standalone",
+  "icons": [
+    {
+      "type": "image/png",
+      "src": "/assets/ddc9cc20be9fb95c.png"
+    },
+    {
+      "type": "image/png",
+      "src": "/assets/ddc9cc20be9fb95c.png"
+    }
+  ],
+  "name": "Agoura Accounting",
+  "short_name": "Agoura Accounting",
+  "theme_color": "#fcf9f3",
+  "background_color": "#fcf9f3"
+}
