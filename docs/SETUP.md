@@ -37,3 +37,9 @@ Credentials are entered directly in Cloudflare. All six bindings can be Secrets:
 - [Hostname restrictions](https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/)
 
 Local preview `/` and `/contact-us` returned HTTP 200; unconfigured `/api/config` returned disabled with no site key. Browser inventory was empty in this session, so a fresh desktop/mobile screenshot comparison could not be performed.
+
+## Client review revision — DNS migration paused
+
+Owner requested client approval before DNS migration. Nameserver cutover is not confirmed; do not assume it occurred. Cloudflare records were reconciled with supplied exports: two SRV records restored, imported GoDaddy NS entries removed, and two temporary DNS-only apex A records added (`76.223.105.230`, `13.248.243.5`) to preserve the existing hosting target. A public parent-zone check found no DS record at that time. Exports are user-provided local references and are not included in the site commit.
+
+Owner authorized a dev revision: remove Mobile, require Name/Email/Message consistently on all three forms (client and server), and match the visible original popup more closely. Popup uses a white body, gold header, underlined fields and outlined Send button. Turnstile and provider-acceptance safeguards remain. Changes require renewed preview/client approval; main and DNS are unchanged by this revision. No browser is available for fresh screenshots in this session.

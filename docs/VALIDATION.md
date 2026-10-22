@@ -34,3 +34,5 @@ October 22, 2026: owner confirmed a successful form test at the stable dev alias
 Production promotion October 22, 2026: approved dev history merged to main as `2aad805` and pushed. Production Pages home, contact-us, site.js and config returned HTTP 200. Config reports enabled; downloaded home HTML and site.js match repository files byte-for-byte. Production form delivery and owner visual checks remain pending. No DNS change was made.
 
 Owner subsequently confirmed production is all working following the request to test all three forms and email delivery. Production acceptance is complete based on owner checks. DNS cutover and public-domain routing/TLS verification remain pending and separately authorized.
+
+Client-review revision: removed Mobile and standardized Name/Email/Message requirements in all three forms and backend. Added coverage for missing/blank fields for each form kind and required HTML controls. Asset audit, syntax checks and seven test groups pass. No browser available; updated popup visual comparison and live preview/client approval remain pending. Previous acceptance applies to the prior version. DNS migration paused.

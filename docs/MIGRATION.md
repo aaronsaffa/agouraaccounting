@@ -37,7 +37,7 @@ The obsolete Google notice and badge styling are removed. Managed Turnstile uses
 
 The capture has no native form action and no input names for user fields: GoDaddy hydration supplied submission behavior. Its contact widget configuration lists optional attachments, but neither captured HTML nor the live desktop/mobile forms rendered an attachment control during inspection. The migration preserves the visible fields; attachment upload support is not implemented. Confirm whether attachments are expected before enabling them.
 
-The floating messaging widget declares `notificationPreference: EMAIL`, `formEmail: asaffa@gmail.com`, and required Name/Mobile/Email/How can we help? fields. Local implementation retains those labels, welcome text, and success wording. It uses an accessible modal with the original colors/fonts; precise popup layout and GoDaddy Conversations/SMS features are not reproduced. The unopened pages and launcher retain the original appearance.
+The floating messaging widget declares `notificationPreference: EMAIL`, `formEmail: asaffa@gmail.com`, and required Name/Mobile/Email/How can we help? fields. The owner subsequently supplied screenshots showing no Mobile field in the visible original. At the owner’s request, local implementation removes Mobile and requires Name, Email and Message across all forms. The accessible popup now follows the visible original with a gold header, white body, underlined controls and outlined Send button, retaining the welcome and success text. GoDaddy Conversations/SMS features are not reproduced. The unopened pages and launcher retain the original appearance.
 
 ## External dependencies remaining
 

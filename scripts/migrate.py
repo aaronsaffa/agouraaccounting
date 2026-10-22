@@ -53,8 +53,10 @@ for name in ['index.html','contact-us.html']:
     def field(m):
         tag=m[0]; aid=re.search(r'data-aid="CONTACT_FORM_(NAME|EMAIL|MESSAGE)"',tag)[1].lower()
         tag=tag.replace(' type="text"',' type="email"' if aid=='email' else ' type="text"')
-        return tag.replace(' data-aid=',f' name="{aid}" maxlength="{5000 if aid=="message" else 254}"'+(' required autocomplete="email"' if aid=='email' else ' autocomplete="name"' if aid=='name' else '')+' data-aid=')
+        return tag.replace(' data-aid=',f' name="{aid}" maxlength="{5000 if aid=="message" else 254}"'+' required'+(' autocomplete="email"' if aid=='email' else ' autocomplete="name"' if aid=='name' else '')+' data-aid=')
     s=re.sub(r'<(?:input|textarea)\b[^>]*data-aid="CONTACT_FORM_(?:NAME|EMAIL|MESSAGE)"[^>]*>',field,s)
+    s=re.sub(r'(<label\b[^>]*>Name)(</label>)', r'\1*\2', s)
+    s=s.replace('aria-label="Message"', 'aria-label="Message*"').replace('placeholder="Message"', 'placeholder="Message*"')
     s=s.replace('name="_app_id"','name="website"')
     # Remove the obsolete Google notice and badge styling from the captured source.
     s=re.sub(r'<p[^>]*>This site is protected by reCAPTCHA.*?</p>', '', s)
