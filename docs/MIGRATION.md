@@ -25,13 +25,13 @@ The original lazy-image placeholders did not contain the three actual lower-page
 | Header dynamic font sizing | Standalone copy of captured scaler, without hosting runtime |
 | GoDaddy contact.apps-api.instantpage.secureserver.net forms | `/api/contact` Cloudflare Pages Function + Resend |
 | GoDaddy Conversations/Reamaze/Connections messaging | Same floating button; accessible local email dialog |
-| GoDaddy CAPTCHA registration | Client-owned reCAPTCHA v3 configuration and server verification |
+| GoDaddy CAPTCHA registration | Client-owned Turnstile configuration and server verification |
 | GoDaddy tracking, TCC, TTI and telemetry | Removed |
 | Uncaptured `/sw.js` registration | Removed; no offline behavior claimed |
 | GoDaddy webmanifest icon URLs | Local logo |
 | Powered by GoDaddy footer | Removed inaccurate attribution text; retained its spacing |
 
-The reCAPTCHA disclosure retains exact original wording and reserved space. It is visible only when a configured reCAPTCHA script has loaded. The local unconfigured preview does not claim CAPTCHA protection.
+The obsolete Google notice and badge styling are removed. Managed Turnstile uses explicit rendering at submission, with interaction-only appearance to minimize layout changes. A challenge container is added next to Send only during verification, then removed. Each retry creates a new widget/token; fields remain after errors.
 
 ## Forms and known differences
 
@@ -41,8 +41,8 @@ The floating messaging widget declares `notificationPreference: EMAIL`, `formEma
 
 ## External dependencies remaining
 
-- Google reCAPTCHA v3, loaded only when the email backend and CAPTCHA bindings are configured; Google's privacy/terms links remain.
-- Server-side Google siteverify and Resend HTTPS email API.
+- Cloudflare Turnstile script from `challenges.cloudflare.com`, loaded only on submission when all required bindings exist.
+- Server-side Cloudflare Turnstile Siteverify and Resend HTTPS email API.
 - Public canonical URL and social-image URLs intentionally retain `https://agouraaccounting.com`; they will resolve to local images after migration.
 - No frontend framework, external font request, GoDaddy asset request, analytics service, or hosting-runtime script remains.
 
@@ -50,10 +50,10 @@ The floating messaging widget declares `notificationPreference: EMAIL`, `formEma
 
 - Original capture hash audit and all HTML/CSS asset existence checks passed.
 - JavaScript syntax checks passed under Deno 2.9.7.
-- Three backend test groups cover configuration, validation/origin/method/honeypot, CAPTCHA failures, provider failure/malformed responses/network errors, and accepted delivery using mocks. No real email was sent.
+- Four backend test groups cover configuration, validation/origin/method/honeypot, CAPTCHA failures, provider failure/malformed responses/network errors, and accepted delivery using mocks. No real email was sent.
 - Browser checks use the live original and local preview at 1440×900 and 390×900, including screenshots after lazy-image loading. Local navigation, failed submission with retained input, and messaging open/close are checked.
 - Final measured results are recorded in `VALIDATION.md`; raw screenshots and reports are kept locally in ignored `artifacts/`.
-- Cloudflare's deployed routing/runtime, live credentials, production CAPTCHA, actual mail acceptance/inbox arrival, spam volume, and email deliverability remain untested.
+- The owner reports successful Cloudflare dev preview deployment and approved appearance. Live Turnstile widgets, credentials, actual mail acceptance/inbox arrival, spam volume, and email deliverability remain untested. See `SETUP.md` for current state.
 - Browser comparison does not cover every device, browser engine, pixel density, or breakpoint. Original-site submissions were never exercised.
 
 References: [Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/), [Resend send-email API](https://resend.com/docs/api-reference/emails/send-email).

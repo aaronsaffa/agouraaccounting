@@ -1,39 +1,64 @@
 'use strict';
 const originalError = 'Something went wrong while sending your message, please try again later';
-let configuration;
-const configReady = fetch('/api/config').then(async response => {
+let scriptReady;
+async function loadTurnstile() {
+  const response = await fetch('/api/config', { signal: AbortSignal.timeout(10000) });
   if (!response.ok) throw new Error('Unavailable');
-  configuration = await response.json();
-  if (!configuration.enabled || !configuration.siteKey) return;
-  await new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(configuration.siteKey)}`;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.append(script);
-  });
-  document.querySelectorAll('[data-recaptcha-disclosure]').forEach(p => { p.hidden = false; p.classList.add('captcha-active'); });
-}).catch(() => { configuration = { enabled: false }; });
+  const configuration = await response.json();
+  if (!configuration.enabled || !configuration.siteKey) throw new Error('Unavailable');
+  if (!scriptReady) {
+    scriptReady = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => fail(), 15000);
+      const fail = () => { clearTimeout(timeout); script.remove(); scriptReady = undefined; reject(new Error('Unavailable')); };
+      window.agouraTurnstileReady = () => { clearTimeout(timeout); resolve(); };
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=agouraTurnstileReady&render=explicit';
+      script.onerror = fail;
+      document.head.append(script);
+    });
+  }
+  await scriptReady;
+  return configuration;
+}
 function initializeForm(form, kind = 'contact') {
   form.querySelectorAll('[data-ux="InputFloatLabel"] > input').forEach(input => {
     const update = () => input.parentElement.classList.toggle('has-value', Boolean(input.value));
     input.addEventListener('input', update);
     update();
   });
+  let submitting = false;
   form.addEventListener('submit', async event => {
     event.preventDefault();
-    if (!form.reportValidity()) return;
+    if (submitting || !form.reportValidity()) return;
+    submitting = true;
     const button = form.querySelector('[type="submit"]');
     const status = form.querySelector('.form-status');
     status.hidden = false;
     status.textContent = 'Sending';
     button.disabled = true;
+    let widget;
+    let container;
+    let challengeTimer;
     try {
-      await configReady;
-      if (!configuration?.enabled || !window.grecaptcha) throw new Error('Unavailable');
+      const configuration = await loadTurnstile();
+      container = document.createElement('div');
+      container.className = 'turnstile-container';
+      button.before(container);
+      status.textContent = 'Verifying. Please complete the security check if prompted.';
       const token = await new Promise((resolve, reject) => {
-        grecaptcha.ready(() => grecaptcha.execute(configuration.siteKey, { action: 'contact' }).then(resolve, reject));
+        const fail = () => reject(new Error('Verification failed'));
+        challengeTimer = setTimeout(fail, 120000);
+        widget = window.turnstile.render(container, {
+          sitekey: configuration.siteKey, action: kind,
+          execution: 'execute', appearance: 'interaction-only', size: 'flexible',
+          'response-field': false, retry: 'never', 'refresh-expired': 'never',
+          callback: resolve, 'error-callback': fail,
+          'expired-callback': fail, 'timeout-callback': fail
+        });
+        window.turnstile.execute(widget);
       });
+      clearTimeout(challengeTimer);
+      status.textContent = 'Sending';
       const payload = Object.fromEntries(new FormData(form));
       Object.assign(payload, { kind, page: location.pathname, token });
       const response = await fetch('/api/contact', {
@@ -48,6 +73,10 @@ function initializeForm(form, kind = 'contact') {
     } catch {
       status.textContent = originalError;
     } finally {
+      clearTimeout(challengeTimer);
+      if (widget !== undefined) window.turnstile.remove(widget);
+      container?.remove();
+      submitting = false;
       button.disabled = false;
     }
   });
@@ -72,7 +101,6 @@ if (launcher) {
       <label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
       <label>How can we help?<textarea name="message" rows="4" maxlength="5000" required></textarea></label>
       <button type="submit">Send</button>
-      <p hidden data-recaptcha-disclosure>This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and <a href="https://policies.google.com/terms">Terms of Service</a> apply.</p>
       <p class="form-status" role="status" aria-live="polite" hidden></p>
     </form>`;
   document.body.append(dialog);

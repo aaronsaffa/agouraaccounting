@@ -13,4 +13,4 @@ button:disabled { opacity: .65; cursor: wait; }
 .messaging-dialog input, .messaging-dialog textarea { box-sizing: border-box; width: 100%; padding: 10px; border: 1px solid #aaa; background: white; color: #161616; font: inherit; }
 .messaging-dialog button[type="submit"] { width: 100%; border: 0; padding: 14px; background: #f0e1c0; color: #1c1b1a; font: inherit; cursor: pointer; }
 
-[data-recaptcha-disclosure]:not(.captcha-active) { visibility: hidden; }
+.turnstile-container { width: 100%; min-width: 0; }

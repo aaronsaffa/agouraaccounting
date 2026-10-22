@@ -22,3 +22,9 @@ The live original produced third-party network failures during browser checks; l
 No production email or CAPTCHA credentials were available. Cloudflare routing/runtime and actual email delivery remain untested. The Python preview serves static pages and an explicitly unavailable mail endpoint; it is not a Cloudflare Functions emulator.
 
 Raw comparison evidence is available locally under ignored `artifacts/` (`original-*.png`, `local-*.png`, `browser-report.json`, and `interaction-report.json`). Headless full-page screenshot capture initially had a compositor artifact; final screenshots use a full-height viewport after recording dimensions at the stated viewport size.
+
+## Turnstile update — October 21, 2026
+
+Owner confirmed successful dev preview deployment and approved appearance before this update. Stable branch alias `dev.agouraaccounting.pages.dev` returned HTTP 200. Replacement code passes asset/capture audit, JavaScript checks, four mocked backend test groups and a mocked browser-controller lifecycle test (errors, expiry, timeout, retries, provider failure, success). No live Turnstile or Resend configuration is available yet; managed challenge appearance and real delivery remain pending. Current setup and decisions: [SETUP.md](SETUP.md).
+
+Local preview `/` and `/contact-us` returned HTTP 200; unconfigured `/api/config` returned disabled with no site key. Browser inventory was empty in this session, so a fresh desktop/mobile screenshot comparison could not be performed.

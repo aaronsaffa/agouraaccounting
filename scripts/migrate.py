@@ -56,8 +56,9 @@ for name in ['index.html','contact-us.html']:
         return tag.replace(' data-aid=',f' name="{aid}" maxlength="{5000 if aid=="message" else 254}"'+(' required autocomplete="email"' if aid=='email' else ' autocomplete="name"' if aid=='name' else '')+' data-aid=')
     s=re.sub(r'<(?:input|textarea)\b[^>]*data-aid="CONTACT_FORM_(?:NAME|EMAIL|MESSAGE)"[^>]*>',field,s)
     s=s.replace('name="_app_id"','name="website"')
-    # Disclosure only appears when configured reCAPTCHA protection is active.
-    s=s.replace('<p data-ux="DetailsMinor"','<p data-recaptcha-disclosure data-ux="DetailsMinor"')
+    # Remove the obsolete Google notice and badge styling from the captured source.
+    s=re.sub(r'<p[^>]*>This site is protected by reCAPTCHA.*?</p>', '', s)
+    s=re.sub(r'<style>\.grecaptcha-badge.*?</style>', '', s)
     s=s.replace('</form>','<p class="form-status" role="status" aria-live="polite" hidden></p></form>')
     # Hosting attribution no longer describes the platform; retain spacing via its existing container.
     s=re.sub(r'(<p[^>]*data-aid="FOOTER_POWERED_BY_RENDERED"[^>]*>).*?</p>',r'\1<span aria-hidden="true">&nbsp;</span></p>',s)

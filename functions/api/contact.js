@@ -4,7 +4,7 @@ export async function onRequest({ request, env }) {
   const url = new URL(request.url);
   if (request.headers.get('Origin') !== url.origin) return failure(403);
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return failure(415);
-  if (!['RESEND_API_KEY', 'CONTACT_TO', 'CONTACT_FROM', 'RECAPTCHA_SECRET_KEY', 'RECAPTCHA_SITE_KEY', 'RECAPTCHA_HOSTNAMES'].every(key => env[key])) return failure(503);
+  if (!['RESEND_API_KEY', 'CONTACT_TO', 'CONTACT_FROM', 'TURNSTILE_SECRET_KEY', 'TURNSTILE_SITE_KEY', 'TURNSTILE_HOSTNAMES'].every(key => env[key])) return failure(503);
   let data;
   try {
     const text = await request.text();
@@ -12,7 +12,7 @@ export async function onRequest({ request, env }) {
     data = JSON.parse(text);
   } catch { return failure(400); }
   if (!data || typeof data !== 'object' || Array.isArray(data)) return failure(400);
-  const limits = { name: 254, email: 254, message: 5000, phone: 40, token: 4096, website: 254, page: 100, kind: 20 };
+  const limits = { name: 254, email: 254, message: 5000, phone: 40, token: 2048, website: 254, page: 100, kind: 20 };
   for (const [field, max] of Object.entries(limits)) {
     if (data[field] !== undefined && (typeof data[field] !== 'string' || data[field].length > max)) return failure(400);
   }
@@ -21,14 +21,14 @@ export async function onRequest({ request, env }) {
   if (!data.token || !['contact','messaging'].includes(data.kind) || !['/','/contact-us','/contact-us/','/contact-us.html'].includes(data.page)) return failure(400);
   if (data.kind === 'messaging' && (!data.name?.trim() || !data.message?.trim() || !data.phone?.trim())) return failure(400);
   try {
-    const verification = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST', body: new URLSearchParams({ secret: env.RECAPTCHA_SECRET_KEY, response: data.token }),
+    const verification = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST', body: new URLSearchParams({ secret: env.TURNSTILE_SECRET_KEY, response: data.token }),
       signal: AbortSignal.timeout(8000)
     });
     if (!verification.ok) return failure(502);
     const captcha = await verification.json();
-    const hostnames = env.RECAPTCHA_HOSTNAMES.split(',').map(host => host.trim());
-    if (!captcha.success || captcha.action !== 'contact' || !(captcha.score >= 0.5) || !hostnames.includes(captcha.hostname)) return failure(403);
+    const hostnames = env.TURNSTILE_HOSTNAMES.split(',').map(host => host.trim());
+    if (captcha.success !== true || captcha.action !== data.kind || !hostnames.includes(captcha.hostname)) return failure(403);
     const delivery = await fetch('https://api.resend.com/emails', {
       method: 'POST', headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({

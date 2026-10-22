@@ -26,31 +26,33 @@ Stop the static preview first to free the port. Configure local bindings in igno
 - `wrangler.toml` declares the output directory. `/api/*` uses Functions; other requests serve static assets. Cloudflare serves `contact-us.html` at `/contact-us`; the legacy extension path redirects to the clean path.
 - Repository preparation permits pushing `dev` and establishing `main` on origin. No Cloudflare deployment, DNS change, or original-site modification is part of this preparation.
 
+See [setup state and remaining steps](docs/SETUP.md) before continuing account configuration. The dev preview has deployed successfully and its appearance was approved.
+
 ## Contact delivery configuration required
 
-Before starting the preview deployment, set all six bindings in Cloudflare Pages under **Settings → Variables and Secrets → Preview**. Store `RESEND_API_KEY` and `RECAPTCHA_SECRET_KEY` as encrypted secrets; the other values can be plain environment variables. No build-time variables are required. Production bindings are separate.
+Before enabling live form delivery, set all six bindings in Cloudflare Pages under **Settings → Variables and Secrets → Preview**. Store `RESEND_API_KEY` and `TURNSTILE_SECRET_KEY` as encrypted secrets; the other values can be plain environment variables. No build-time variables are required. Production bindings are separate.
 
 | Binding | Needed value |
 | --- | --- |
 | `RESEND_API_KEY` | Secret API key for an authorized Resend account |
 | `CONTACT_TO` | Confirmed destination email; not inferred from public address |
 | `CONTACT_FROM` | Sender address on a domain verified with Resend |
-| `RECAPTCHA_SITE_KEY` | Public key for a client-owned reCAPTCHA v3 registration |
-| `RECAPTCHA_SECRET_KEY` | Matching secret key |
-| `RECAPTCHA_HOSTNAMES` | Comma-separated exact permitted hostnames, e.g. `dev.<project>.pages.dev`; no scheme, path, or wildcard |
+| `TURNSTILE_SITE_KEY` | Public key for a client-owned Turnstile registration |
+| `TURNSTILE_SECRET_KEY` | Matching secret key |
+| `TURNSTILE_HOSTNAMES` | Comma-separated exact permitted hostnames, e.g. `dev.agouraaccounting.pages.dev`; no scheme, path, or wildcard |
 
-The capture exposes `asaffa@gmail.com` as the messaging recipient and displays `info@agouraaccounting.com` on the home page. Confirm which recipient should receive both forms and messaging. Register the preview hostname with reCAPTCHA as well as listing it in `RECAPTCHA_HOSTNAMES`. Prefer the stable `dev.<project>.pages.dev` preview alias; unique deployment hostnames must also be allowed if used for form testing. Do not reuse GoDaddy's platform CAPTCHA keys. Resend is the prepared adapter; a different provider would require updating the backend.
+The capture exposes `asaffa@gmail.com` as the messaging recipient and displays `info@agouraaccounting.com` on the home page. Confirm which recipient should receive both forms and messaging. Register the preview hostname with Turnstile as well as listing it in `TURNSTILE_HOSTNAMES`. Prefer the stable `dev.agouraaccounting.pages.dev` preview alias; unique deployment hostnames must also be allowed if used for form testing. Do not reuse GoDaddy's platform CAPTCHA keys. Resend is the prepared adapter; a different provider would require updating the backend.
 
 Both existing contact forms retain optional Name and Message and required Email. The messaging dialog retains Name, Mobile, Email, and How can we help? Fields and business text are retained from the captured widget configuration. It sends email through the same handler; GoDaddy Conversations/SMS integration is replaced, not reproduced.
 
-The backend checks same-origin JSON requests, field types and limits, a honeypot, reCAPTCHA v3 action/score/hostname, and email provider acceptance. Missing credentials, CAPTCHA errors, provider rejection, malformed responses, and timeouts return failure. Visitors keep their input after failure. Only a successful provider response with an email ID yields success. Acceptance means queued by the provider; it does not guarantee inbox arrival.
+The backend checks same-origin JSON requests, field types and limits, a honeypot, Turnstile action/hostname, and email provider acceptance. Missing credentials, CAPTCHA errors, provider rejection, malformed responses, and timeouts return failure. Visitors keep their input after failure. Only a successful provider response with an email ID yields success. Acceptance means queued by the provider; it does not guarantee inbox arrival.
 
 ## Validation
 
 ```sh
 python3 scripts/audit.py
 deno check public/assets/site.js public/assets/font-scaler.js functions/api/contact.js functions/api/config.js
-deno test tests/contact.test.js
+deno test --allow-read tests/contact.test.js tests/form.test.js
 ```
 
 See [migration notes](docs/MIGRATION.md) for provenance, comparisons, remaining dependencies, and verification limits. `scripts/browser-qa.js` connects to a separately launched headless Chromium-compatible browser on localhost:9222; it does not submit to the original site. Screenshots and browser reports go to ignored `artifacts/`.
