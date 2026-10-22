@@ -23,8 +23,8 @@
 
 Next steps:
 
-1. Complete the authorized push of dev and merge/push to main. Retain all history; no force pushes.
-2. Check the production Pages URL, `/contact-us`, static assets and public `/api/config` after build completion. Presence of bindings does not prove their values are correct.
+1. Completed: dev pushed through `8156b49`; merged into main with merge commit `2aad805` and pushed without force. Production home HTML and site JavaScript match repository files exactly. Home, contact-us, script and public config returned HTTP 200; config reports enabled. DNS was not changed.
+2. Initial production route/config checks passed. Presence of bindings does not prove their values are correct; live form testing remains pending.
 3. Owner tests all three forms on the production Pages URL and confirms inbox delivery; confirm desktop/mobile appearance. No automatic email submission or challenge solving is part of repository checks.
 4. Only after production acceptance, separately authorize and plan custom-domain activation and DNS cutover. Check existing DNS and preserve mail records before any change. Public-domain TLS/routing requires verification after cutover.
 
