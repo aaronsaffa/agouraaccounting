@@ -21,10 +21,10 @@ Stop the static preview first to free the port. Configure local bindings in igno
 ## Cloudflare Pages preview setup
 
 - Framework preset: **None**; build command: `exit 0`; build output directory: `public`; root directory: leave blank (repository root). No dependencies or application build are required. The no-op build command follows [Cloudflare’s static HTML guidance](https://developers.cloudflare.com/pages/framework-guides/deploy-anything/) and allows Pages Functions to be packaged.
-- Connect GitHub repository `aaronsaffa/agouraaccounting`. Production branch: `main`; preview deployments: custom branches, include only `dev`. Implementation is on `dev`; `main` contains the initial requirements checkpoint. Keep production deployments disabled while reviewing the migration. Creating a Pages project may trigger an initial build; project creation and deployment are left to the owner.
+- Connect GitHub repository `aaronsaffa/agouraaccounting`. Production branch: `main`; preview deployments: custom branches, include only `dev`. Preview acceptance is complete. The owner authorized promoting the migration from `dev` to `main` for production testing at `https://agouraaccounting.pages.dev` before DNS cutover. Production and Preview require separate bindings.
 - Pages Functions must be included; use Git integration or Wrangler, rather than dashboard static drag-and-drop uploads.
 - `wrangler.toml` declares the output directory. `/api/*` uses Functions; other requests serve static assets. Cloudflare serves `contact-us.html` at `/contact-us`; the legacy extension path redirects to the clean path.
-- Repository preparation permits pushing `dev` and establishing `main` on origin. No Cloudflare deployment, DNS change, or original-site modification is part of this preparation.
+- The owner authorized Git pushes to `dev` and promotion to `main`, triggering Pages builds. DNS cutover and custom-domain activation remain separate work requiring authorization.
 
 See [setup state and remaining steps](docs/SETUP.md) before continuing account configuration. The dev preview has deployed successfully and its appearance was approved.
 

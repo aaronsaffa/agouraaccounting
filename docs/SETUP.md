@@ -1,9 +1,9 @@
-# Migration handoff — October 21, 2026
+# Migration handoff — October 22, 2026
 
 ## Decisions and completed work
 
 - Preserve the approved site, static HTML/CSS/JS in `public/`, Pages Functions in `functions/`. No added dependencies.
-- Repository `aaronsaffa/agouraaccounting`; migration work and pushes on `dev` only. `main` remains the requirements checkpoint (`13bcefc`). Never merge, deploy manually, or change DNS without new authorization.
+- Repository `aaronsaffa/agouraaccounting`; routine work on `dev`. On October 22, 2026 the owner explicitly authorized pushing pending dev documentation and merging/pushing the approved migration into `main` to trigger a production build for pre-DNS testing. No DNS change or manual deployment is authorized. The pre-migration main checkpoint is `13bcefc`.
 - Cloudflare Pages project `agouraaccounting` is connected. Owner reports dev preview deployment succeeded and appearance is approved.
 - Build: None preset, `exit 0`, output `public`, root blank; production branch `main`, preview branch `dev`.
 - Stable alias `https://dev.agouraaccounting.pages.dev` confirmed available with HTTP 200 on October 21, 2026. Use this URL for form testing; unique deployment URLs are intentionally not in the initial allowlist.
@@ -12,17 +12,23 @@
 - Secret keys stay in Cloudflare encrypted bindings or ignored local `.dev.vars`; `.env.example` has empty key placeholders. No live keys are committed.
 - Original read-only capture remains unchanged. Asset audit, syntax checks, four backend test groups and one browser-controller test passed. Controller tests mock the DOM and services; they do not prove live widget behavior.
 
-## Remaining setup, in order
+## Current state and remaining work
 
-Current position: **stable-host form test and inbox delivery confirmed** (October 22, 2026). All six bindings are saved as encrypted Secrets under Preview. The running `/api/config` reports enabled. The subsequent Turnstile 110200 error was caused by testing the deployment-specific hostname `0709b88f.agouraaccounting.pages.dev`, rather than the authorized stable alias. Owner switched to `dev.agouraaccounting.pages.dev` and reported the test worked. Do not add random deployment hostnames; use the stable dev alias. Owner explicitly confirmed the test email arrived in the destination inbox. Owner confirmed all three form variants work: home contact form, contact-us form, and floating messaging dialog, including delivery as requested in the test checklist. Owner approved appearance on desktop and mobile. Preview validation is complete based on owner checks: all three forms work and deliver email, and desktop/mobile appearance is approved. Next: push documentation commits when authorized, then prepare production hostname/widget authorization and bindings. Production promotion and DNS cutover still require explicit authorization. This Wrangler-managed project only permits Secrets through the dashboard; all six values can be Secrets, while the public site key is intentionally returned by `/api/config`. No secret values are recorded here.
+- Preview accepted by owner: all three forms (home, contact-us, messaging) succeed and deliver email; desktop and mobile appearance approved.
+- All six Preview bindings are encrypted Secrets. `/api/config` reports enabled.
+- Turnstile error 110200 was caused by testing `0709b88f.agouraaccounting.pages.dev` instead of the authorized stable alias. Use the stable alias; do not add random deployment hostnames.
+- Owner confirmed all six Production bindings are now Secrets, including `CONTACT_TO`. This avoids dashboard Text values being superseded by this Wrangler-managed configuration. The public site key is intentionally returned by `/api/config`; no secret keys are recorded in Git.
+- Owner confirmed widget authorization for `agouraaccounting.pages.dev`, `agouraaccounting.com`, and `www.agouraaccounting.com`. Production `TURNSTILE_HOSTNAMES` should contain these three comma-separated hostnames.
+- Production promotion authorized; Git push triggers the Pages build. Production runtime configuration, actual form delivery and appearance must be checked at `https://agouraaccounting.pages.dev` after the build succeeds.
 
-1. In Cloudflare dashboard → Turnstile → Add widget: name `Agoura Accounting dev`, hostname `dev.agouraaccounting.pages.dev`, mode **Managed**. Leave pre-clearance off. Create it and keep the keys page open. No DNS changes are needed for Turnstile.
-2. In Workers & Pages → `agouraaccounting` → Settings → Variables and Secrets, select **Preview**. Enter the public site key as `TURNSTILE_SITE_KEY`, the secret key directly as encrypted `TURNSTILE_SECRET_KEY`, and plain `TURNSTILE_HOSTNAMES=dev.agouraaccounting.pages.dev`. Remove obsolete `RECAPTCHA_*` bindings if present. Do not put placeholders or testing keys into the live preview bindings.
-3. Sign into/create Resend. Confirm the destination (`CONTACT_TO`) privately; the source mentions both `asaffa@gmail.com` and `info@agouraaccounting.com`, so do not assume one. For an initial no-DNS test, use Resend's permitted testing sender/recipient restrictions shown in its dashboard. A custom sender requires a verified domain; do not add DNS records as part of the currently authorized work. Stop and discuss that separately if needed.
-4. Create a Resend API key with sending access, restricted to the intended domain where supported. Enter it directly as encrypted `RESEND_API_KEY` in Pages **Preview**. Enter authorized `CONTACT_FROM` and confirmed `CONTACT_TO` as plain variables. All six bindings must be present before sending is enabled. Never share keys in chat.
-5. After bindings are saved, trigger a fresh dev preview build so it receives the bindings (request/authorize a new dev commit or retry the preview in Cloudflare). Do not deploy `main`.
-6. Test `/`, `/contact-us`, and the messaging dialog at the stable alias on desktop/mobile. Check challenge interaction, expiry/retry, retained fields on failure and provider rejection, and real success only after Resend returns an email ID. Confirm the message in Resend and the recipient inbox. Report ambiguous network failures before manually retrying: provider acceptance followed by a lost browser response can result in duplicate email on resubmission.
-7. Record live verification results here and in `VALIDATION.md`. Production secrets, domain verification, promotion to main, custom domains, and DNS remain separate future work.
+Next steps:
+
+1. Complete the authorized push of dev and merge/push to main. Retain all history; no force pushes.
+2. Check the production Pages URL, `/contact-us`, static assets and public `/api/config` after build completion. Presence of bindings does not prove their values are correct.
+3. Owner tests all three forms on the production Pages URL and confirms inbox delivery; confirm desktop/mobile appearance. No automatic email submission or challenge solving is part of repository checks.
+4. Only after production acceptance, separately authorize and plan custom-domain activation and DNS cutover. Check existing DNS and preserve mail records before any change. Public-domain TLS/routing requires verification after cutover.
+
+Credentials are entered directly in Cloudflare. All six bindings can be Secrets: `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_TO`, `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY`, `TURNSTILE_HOSTNAMES`. Any provider acceptance followed by a lost browser response may result in duplicate email if a visitor retries.
 
 ## References
 
