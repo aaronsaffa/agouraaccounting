@@ -44,3 +44,15 @@ Deno.test('form challenge failure, expiry, retries, provider rejection and succe
   assert(calls === 2 && removed === 5, 'Failed challenges never submit; every attempt removes spent widget');
   assert(status.textContent.startsWith('Thanks'));
 });
+Deno.test('all rendered forms expose the same three required fields without phone', async () => {
+  const popup = source.slice(source.indexOf('dialog.innerHTML'), source.indexOf('document.body.append(dialog)'));
+  const pages = await Promise.all(['index.html','contact-us.html'].map(name => Deno.readTextFile(new URL(`../public/${name}`, import.meta.url))));
+  for (const markup of [...pages, popup]) {
+    const controls = [...markup.matchAll(/<(?:input|textarea)\b[^>]*>/g)].map(match => match[0]);
+    for (const name of ['name','email','message']) {
+      const field = controls.find(control => control.includes(`name="${name}"`));
+      assert(field && /\brequired\b/.test(field), `${name} must be required`);
+    }
+    assert(!controls.some(control => /name="phone"/.test(control)), 'Phone must not be collected');
+  }
+});

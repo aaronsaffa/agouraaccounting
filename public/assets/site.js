@@ -93,13 +93,12 @@ if (launcher) {
   dialog.setAttribute('aria-labelledby', 'messaging-title');
   dialog.innerHTML = `<button type="button" class="close-dialog" aria-label="Close">×</button>
     <h2 id="messaging-title">Agoura Accounting</h2>
-    <p>Hi! Let us know how we can help and we’ll respond shortly.</p>
+    <p class="messaging-welcome">Hi! Let us know how we can help and we’ll respond shortly.</p>
     <form action="/api/contact" method="post">
       <input name="website" type="text" tabindex="-1" autocomplete="off" hidden>
-      <label>Name<input name="name" autocomplete="name" maxlength="254" required></label>
-      <label>Mobile<input name="phone" type="tel" autocomplete="tel" maxlength="40" required></label>
-      <label>Email<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
-      <label>How can we help?<textarea name="message" rows="4" maxlength="5000" required></textarea></label>
+      <label>Name*<input name="name" autocomplete="name" maxlength="254" required></label>
+      <label>Email*<input name="email" type="email" autocomplete="email" maxlength="254" required></label>
+      <label>How can we help?*<textarea name="message" rows="4" maxlength="5000" required></textarea></label>
       <button type="submit">Send</button>
       <p class="form-status" role="status" aria-live="polite" hidden></p>
     </form>`;

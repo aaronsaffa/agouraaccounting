@@ -12,14 +12,14 @@ export async function onRequest({ request, env }) {
     data = JSON.parse(text);
   } catch { return failure(400); }
   if (!data || typeof data !== 'object' || Array.isArray(data)) return failure(400);
-  const limits = { name: 254, email: 254, message: 5000, phone: 40, token: 2048, website: 254, page: 100, kind: 20 };
+  const limits = { name: 254, email: 254, message: 5000, token: 2048, website: 254, page: 100, kind: 20 };
   for (const [field, max] of Object.entries(limits)) {
     if (data[field] !== undefined && (typeof data[field] !== 'string' || data[field].length > max)) return failure(400);
   }
   if (data.website) return failure(400);
   if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email) || /[\r\n]/.test(data.email)) return failure(400);
   if (!data.token || !['contact','messaging'].includes(data.kind) || !['/','/contact-us','/contact-us/','/contact-us.html'].includes(data.page)) return failure(400);
-  if (data.kind === 'messaging' && (!data.name?.trim() || !data.message?.trim() || !data.phone?.trim())) return failure(400);
+  if (!data.name?.trim() || !data.message?.trim()) return failure(400);
   try {
     const verification = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST', body: new URLSearchParams({ secret: env.TURNSTILE_SECRET_KEY, response: data.token }),
@@ -34,7 +34,7 @@ export async function onRequest({ request, env }) {
       body: JSON.stringify({
         from: env.CONTACT_FROM, to: [env.CONTACT_TO], reply_to: data.email,
         subject: 'Agoura Accounting website inquiry',
-        text: `Page: ${data.page}\nForm: ${data.kind}\nName: ${data.name || ''}\nEmail: ${data.email}\nMobile: ${data.phone || ''}\n\n${data.message || ''}`
+        text: `Page: ${data.page}\nForm: ${data.kind}\nName: ${data.name || ''}\nEmail: ${data.email}\n\n${data.message || ''}`
       }), signal: AbortSignal.timeout(10000)
     });
     if (!delivery.ok) return failure(502);

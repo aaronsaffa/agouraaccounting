@@ -14,7 +14,7 @@ Deno.test('configuration only exposes public site key; incomplete setup disabled
 Deno.test('reject invalid input, unsupported method, cross-origin, missing configuration without sending', async () => {
   const original=globalThis.fetch;globalThis.fetch=()=>{throw new Error('Unexpected outbound request');};
   try {
-    for (const [data,options,status] of [[valid,{env:{}},503],[valid,{method:'GET'},405],[valid,{origin:'https://other.example'},403],[{...valid,email:'invalid'},{},400],[{...valid,website:'spam'},{},400],[{...valid,message:'x'.repeat(5001)},{},400],[{...valid,kind:'messaging'},{},400],[{...valid,token:''},{},400],[{...valid,token:'x'.repeat(2049)},{},400],[null,{},400]]) {
+    for (const [data,options,status] of [[valid,{env:{}},503],[valid,{method:'GET'},405],[valid,{origin:'https://other.example'},403],[{...valid,email:'invalid'},{},400],[{...valid,website:'spam'},{},400],[{...valid,message:'x'.repeat(5001)},{},400],[{...valid,name:''},{},400],[{...valid,message:'   '},{},400],[{...valid,token:''},{},400],[{...valid,token:'x'.repeat(2049)},{},400],[null,{},400]]) {
       const response=await run(data,options);assert(response.status===status,`Expected ${status}, got ${response.status}`);assert(!(await response.json()).accepted);
     }
   } finally { globalThis.fetch=original; }
@@ -65,7 +65,21 @@ Deno.test('Turnstile transport failures fail closed; messaging uses its own acti
       calls++;
       return Response.json(url.includes('siteverify') ? {success:true,action:'messaging',hostname:'agouraaccounting.com'} : {id:'accepted'});
     };
-    assert((await run({...valid,kind:'messaging',phone:'555-0100'})).status === 200);
+    assert((await run({...valid,kind:'messaging'})).status === 200);
     assert(calls === 2);
   } finally {globalThis.fetch = original;}
+});
+Deno.test('both form kinds require nonblank name, email and message before verification', async () => {
+  const original = globalThis.fetch;
+  globalThis.fetch = () => { throw new Error('Validation must precede verification'); };
+  try {
+    for (const kind of ['contact', 'messaging']) {
+      for (const field of ['name', 'email', 'message']) {
+        for (const value of [undefined, '', '   ']) {
+          const response = await run({...valid, kind, [field]:value});
+          assert(response.status === 400, `${kind}: ${field} must be required`);
+        }
+      }
+    }
+  } finally { globalThis.fetch = original; }
 });
