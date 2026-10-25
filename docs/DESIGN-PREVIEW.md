@@ -13,3 +13,9 @@ Cloudflare Pages must allow this branch in its custom preview-branch list in add
 Owner confirmed saving the branch inclusion setting. Local static routes, asset references (including responsive srcsets), noindex metadata, and JavaScript syntax checks passed. No GoDaddy runtime URL was found in either page. The available 35 reference files match their capture hashes; 33 manifest paths are missing from this computer, so the full original-capture audit cannot be completed here. No reference files were edited.
 
 Fresh screenshot QA is unavailable: the Windows capture helper reports a suspended Direct3D GPU device. Desktop/widescreen cropping and the unchanged mobile hero need visual review through the preview link before approval. This limitation does not affect production. The original migration JavaScript and backend files remain unchanged.
+
+## White surround and glass text panel
+
+After reviewing a widescreen screenshot, the owner requested replacing the black side bars and exploring restrained finishing details. The desktop home header now has a white surround with a 24px top inset and 32px side padding. The image retains its bounded size and crop, with 18px rounded corners and a soft shadow. The two original text lines sit together in a dark translucent panel with a pale glass border and backdrop blur. A solid fallback remains readable without blur; reduced-transparency preferences remove the blur and use an opaque panel. No fade is applied, keeping the tree and foreground clear.
+
+All new styling is desktop-only (1024px and wider). White surround rules require a header containing HeaderMedia, so the contact page's original header is not recolored. Business wording, assets, form handling, and production remain unchanged. The owner's screenshot supplies the baseline visual review; a fresh screenshot of this revision is still pending because capture tooling failed in the previous check.
