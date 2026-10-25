@@ -1,0 +1,31 @@
+/* Client-review concept only. The production stylesheet is unchanged. */
+.design-review {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  padding: 10px 20px;
+  background: #f0e1c0;
+  color: #242424;
+  font: 13px/1.5 'Open Sans', sans-serif;
+  text-align: center;
+}
+.design-review a { color: inherit; text-underline-offset: 3px; }
+@media (min-width: 1024px) {
+  .x [data-aid="HEADER_WIDGET"] [data-ux="HeaderMedia"] {
+    max-width: 1600px;
+    margin-inline: auto;
+  }
+  .x [data-aid="HEADER_WIDGET"] [data-aid="BACKGROUND_IMAGE_RENDERED"] {
+    min-height: clamp(420px, 65svh, 640px);
+    background-position: center 68%;
+  }
+  .x [data-aid="HEADER_WIDGET"] [data-aid="BACKGROUND_IMAGE_RENDERED"] > [data-ux="Block"]:last-child {
+    padding-top: 48px;
+  }
+  .x [data-aid="HEADER_WIDGET"] [data-ux="Hero"] {
+    max-width: 100%;
+  }
+}
