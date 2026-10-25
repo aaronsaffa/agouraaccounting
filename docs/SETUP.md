@@ -45,3 +45,15 @@ Owner requested client approval before DNS migration. Nameserver cutover is not 
 Owner authorized a dev revision: remove Mobile, require Name/Email/Message consistently on all three forms (client and server), and match the visible original popup more closely. Popup uses a white body, gold header, underlined fields and outlined Send button. Turnstile and provider-acceptance safeguards remain. Changes require renewed preview/client approval; main and DNS are unchanged by this revision. No browser is available for fresh screenshots in this session.
 
 Owner approved the revised dev appearance and authorized merging/pushing the revised forms to main for client review. DNS migration and custom-domain activation remain explicitly on hold until the client approves the main production Pages site. No DNS export files are included in Git.
+
+## DNS management moved — October 23, 2026
+
+Owner reported nameserver migration. Public Google and Cloudflare resolvers return `cris.ns.cloudflare.com` and `millie.ns.cloudflare.com`. Cloudflare authoritative answers retain both temporary GoDaddy A addresses, Microsoft MX/SPF/tenant TXT, both SRV records, and www CNAME to apex. HTTPS apex returns 200 from GoDaddy DPS; www redirects to apex. This confirms DNS management moved while website hosting remains on GoDaddy. Mail delivery was not tested by the agent; request owner send/receive verification. Next: owner completes Pages custom-domain setup for apex and www, replacing temporary web records through that flow; no DNS mutation was performed by the agent. Earlier DNS hold is superseded only by the owner's reported nameserver action, not blanket authorization for further agent changes.
+
+## Cross-computer handoff — October 24, 2026
+
+Owner activated the apex Pages custom domain, replacing temporary GoDaddy A records with the proposed CNAME to `agouraaccounting.pages.dev`, and confirmed the public site loads. This supersedes the earlier DNS/custom-domain hold for that owner-performed action. The agent has not yet independently verified the final custom-domain routing.
+
+Resume on a new computer by fetching/checking out `dev` and reading AGENTS.md, README.md, docs/SETUP.md and docs/VALIDATION.md. Production main is `58ee98f` (approved revised forms); dev holds subsequent handoff notes. Routine work remains on dev. Do not deploy, change DNS, cancel hosting/email or promote new changes without authorization.
+
+Remaining: verify apex HTTPS and `/api/config`, determine whether www has been added as a separate Pages custom domain, verify www HTTPS/routing, test all three forms with inbox receipt on the public domain, confirm Microsoft 365 send/receive, review DNSSEC status and final DNS backup. Do not assume these tests passed merely because the apex loads. Keep GoDaddy hosting and Microsoft 365 subscriptions active. Secret values stay in Cloudflare, never Git or chat. The original read-only reference capture is outside this repository and will not arrive in a normal clone; migration regeneration/audit requires that separate source.
