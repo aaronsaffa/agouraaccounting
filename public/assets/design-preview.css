@@ -19,15 +19,14 @@
     background-color: #fff;
   }
   .x [data-aid="HEADER_SECTION"]:has([data-ux="HeaderMedia"]) {
-    /* Leave room for the shadow inside the original overflow-hidden section. */
-    padding: 24px 32px 40px;
+    padding: 24px 32px 0;
   }
   .x [data-aid="HEADER_WIDGET"] [data-ux="HeaderMedia"] {
     max-width: 1600px;
     margin-inline: auto;
     overflow: hidden;
     border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(36, 31, 21, .12);
+    box-shadow: none;
   }
   .x [data-aid="HEADER_WIDGET"] [data-aid="BACKGROUND_IMAGE_RENDERED"] {
     min-height: clamp(420px, 65svh, 640px);
