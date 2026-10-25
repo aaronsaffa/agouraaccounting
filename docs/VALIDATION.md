@@ -68,4 +68,6 @@ Pending owner checks on the public apex: submit home, Contact Us, and floating m
 
 Owner subsequently replied “all three worked” to the explicit three-form success-and-inbox checklist. Public-apex form acceptance is complete based on this owner confirmation, superseding the pending form checks in the preceding paragraph; the agent did not independently inspect the inbox. Microsoft 365 business-mailbox send/receive was a separate fourth check and is not covered by that response. A targeted follow-up is pending. www routing and the final full-zone export remain open.
 
+Microsoft 365 follow-up, October 24: owner reports sending a test message to the business email address with no failure notice received so far. The client is unavailable until October 25. Actual inbox receipt and outbound business-mailbox delivery/reply remain unverified; no bounce is not proof of delivery. Complete the two-way check with the client when available.
+
 HTTP comparison downloads are local ignored files under `artifacts/`. Web search's fetch tool could not access these URLs; the results above were obtained with direct HTTPS requests and read-only Cloudflare UI inspection.
