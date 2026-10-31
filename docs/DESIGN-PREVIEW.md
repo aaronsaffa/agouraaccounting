@@ -1,5 +1,7 @@
 # Desktop hero concept
 
+Production approval, October 31, 2026: owner reports client approval and explicitly authorized merging/pushing main. The approved CSS is promoted to `public/assets/desktop-hero.css`; review banner styles, preview JavaScript, noindex metadata, and form blocking are removed. The client's final changes remove the Thervo badge, center the two remaining logos, and change both footer years to 2027. Historical preview-only restrictions below describe the earlier review stage and are superseded for this authorized production promotion. The design branch's published review version remains available separately.
+
 Owner authorized a separate design branch and remote client-review preview on October 24, 2026. This is a scoped exception to the migration's preservation-only/no-push rules: changes and publication are for this preview branch only. Main remains the approved production site. No DNS changes are needed.
 
 Branch: `design/desktop-hero`, based on production `58ee98f`. Dev contains documentation-only follow-ups; main needs no update at this time.

@@ -1,18 +1,16 @@
-/* Client-review concept only. The production stylesheet is unchanged. */
-.design-review {
-  box-sizing: border-box;
-  display: flex;
+/* Client-approved desktop hero; mobile/tablet hero rules remain as captured. */
+.x [data-aid="LOGOS_GRID_RENDERED"] {
   justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 24px;
-  padding: 10px 20px;
-  background: #f0e1c0;
-  color: #242424;
-  font: 13px/1.5 'Open Sans', sans-serif;
-  text-align: center;
+  gap: 48px;
 }
-.design-review a { color: inherit; text-underline-offset: 3px; }
+.x [data-aid="LOGOS_GRID_RENDERED"] > [data-ux="Block"] {
+  flex: 0 1 auto;
+  width: auto;
+  max-width: min(260px, 100%);
+  padding-inline: 0;
+  margin-bottom: 0;
+}
 @media (min-width: 1024px) {
   .x [data-aid="HEADER_WIDGET"]:has([data-ux="HeaderMedia"]),
   .x [data-aid="HEADER_SECTION"]:has([data-ux="HeaderMedia"]) {
