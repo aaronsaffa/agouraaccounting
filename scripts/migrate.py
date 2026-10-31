@@ -64,7 +64,11 @@ for name in ['index.html','contact-us.html']:
     s=s.replace('</form>','<p class="form-status" role="status" aria-live="polite" hidden></p></form>')
     # Hosting attribution no longer describes the platform; retain spacing via its existing container.
     s=re.sub(r'(<p[^>]*data-aid="FOOTER_POWERED_BY_RENDERED"[^>]*>).*?</p>',r'\1<span aria-hidden="true">&nbsp;</span></p>',s)
-    s=s.replace('</head>','<link rel="icon" href="'+logo+'"/><link rel="stylesheet" href="/assets/migration.css"/><link rel="canonical" href="https://agouraaccounting.com'+('/' if name=='index.html' else '/contact-us')+'"/></head>')
+    # October 31 client approval: remove Thervo, retain the two centered logos,
+    # use the approved desktop hero stylesheet, and display the requested year.
+    s=re.sub(r'<div data-ux="Block"[^>]*><span data-ux="Element"[^>]*><img[^>]*data-aid="LOGOS_IMAGE2_RENDERED"[^>]*></span></div>', '', s)
+    s=s.replace('Copyright © 2022 Agoura Accounting', 'Copyright © 2027 Agoura Accounting')
+    s=s.replace('</head>','<link rel="icon" href="'+logo+'"/><link rel="stylesheet" href="/assets/migration.css"/><link rel="stylesheet" href="/assets/desktop-hero.css"/><link rel="canonical" href="https://agouraaccounting.com'+('/' if name=='index.html' else '/contact-us')+'"/></head>')
     s=s.replace('</body>','<script defer src="/assets/font-scaler.js"></script><script defer src="/assets/site.js"></script></body>')
     (PUBLIC/name).write_text(s)
 # Preserve the original standalone heading scaling algorithm, without GoDaddy runtime.

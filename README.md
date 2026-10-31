@@ -1,6 +1,6 @@
 # Agoura Accounting — Cloudflare Pages migration
 
-Preservation migration of the existing GoDaddy site, using its September 28, 2026 wget capture. No redesign. Static deployable files are in `public/`; server handlers are Cloudflare Pages Functions in `functions/api/`. There is no application dependency or build step.
+Preservation migration of the existing GoDaddy site, using its September 28, 2026 wget capture, with the client-approved desktop hero refinement authorized for production on October 31. Static deployable files are in `public/`; server handlers are Cloudflare Pages Functions in `functions/api/`. There is no application dependency or build step. Desktop overrides and the centered two-logo row are in `public/assets/desktop-hero.css`. The Thervo badge is removed and both footers display the client-requested year 2027. Production has no design-review banner, no preview noindex metadata, and no preview form-submission blocker.
 
 ## Local preview
 
